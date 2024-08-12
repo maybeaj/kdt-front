@@ -11,7 +11,7 @@
       <router-link class="nav-link" to="/todos">Todos <span class="sr-only"></span></router-link>
     </li>
     <li class="nav-item active">
-      <router-link class="nav-link" :to="{ name : 'Life'}">Life <span class="sr-only"></span></router-link>
+      <router-link class="nav-link" :to="{ name : 'Login'}">Login<span class="sr-only"></span></router-link>
     </li>
   </ul>
 </nav>

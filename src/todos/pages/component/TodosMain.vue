@@ -20,9 +20,26 @@
 			:todos="filteredTodos"
 			@toggle-todo="toggleTodo"
 			@delete-todo="onDelete"
+			@open-modal="openModal"
 		/>
 		<!-- v-vind ":" 와 같은 뜻 - props로 내리기 위함 / emit을 통해 올려 받은 내용은 함수로 다시 받음 -->
 		<Alert v-if="showAlert" :message="alertMsg" :type="alertType" />
+		<teleport to="#modal">
+			<Modal v-if="showModal" @close="onClose" @delete="deleteTodo">
+				<template v-slot:title> 할 일을 삭제 </template>
+				<template v-slot:body>
+					<p>정말 삭제하시겠습니까?</p>
+				</template>
+				<template v-slot:footer>
+					<button type="button" class="btn btn-secondary" @click="onClose">
+						Close
+					</button>
+					<button type="button" class="btn btn-danger" @click="deleteTodo">
+						Delete
+					</button>
+				</template>
+			</Modal>
+		</teleport>
 	</div>
 </template>
 
@@ -30,20 +47,23 @@
 import { ref, computed } from "vue";
 import TodoList from "@/components/todo/TodoList.vue";
 import Alert from "@/components/alert/AlertComponent.vue";
+import Modal from "@/components/modal/ModalComponent.vue";
 import axios from "@/axios";
 import { useToast } from "@/composables/toast.js";
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 //템플릿에서 사용되는 반드시 스크립트를 이용해서 데이터가 이용되고 반환되어야 한다.
 export default {
-    
 	components: {
 		TodoList,
 		Alert,
+		Modal,
 	},
 	setup() {
 		const todo = ref("");
 		const todos = ref([]);
 		const searchTxt = ref("");
+		const showModal = ref(false);
+		let deleteTodoId = "";
 		//getTodos 페이지 로딩 시 json-server 부터 모든 데이터를 select
 		//get-select, post-insert, delete-delete, update-patch
 		const getTodos = async () => {
@@ -56,24 +76,21 @@ export default {
 			}
 		};
 		getTodos();
-        const router = useRouter();
+		const router = useRouter();
 		const moveToCreate = () => {
 			//router.push(`/todos/${todoId}`);
 			router.push({
 				name: "Create",
 			});
 		};
-		// const onDelete = (index) => {
-		// 	todos.value.splice(index, 1); // 해당 인덱스를 삭제하겠다. - 배열 요소 삭제
-		// };
 
-		const onDelete = async (index) => {
-			const id = todos.value[index].id;
+		const deleteTodo = async () => {
 			try {
 				//axios 통신을 통해서 키값을 전달하고 json-server 쪽에서 삭제
-				const response = await axios.delete(`todos/${id}`);
+				const response = await axios.delete(`todos/${deleteTodoId}`);
 				console.log("debug>>> todos delete response", response);
-				todos.value.splice(index, 1); // 해당 인덱스를 삭제하겠다. - 배열 요소 삭제
+				getTodos();
+				showModal.value = false;
 			} catch (error) {
 				console.log(error);
 			}
@@ -87,48 +104,8 @@ export default {
 			}
 			return todos.value;
 		});
-		/*
-        기존 배열에 담았던 객체 정보를
-        axios 통신을 통해서 json-server db.json에 저장하도록 변경
-        const addTodo = (data) => {
-			todos.value.push(data);
-		};
-        
-		const addTodo = (data) => {
-			axios.post('http://localhost:3000/todos',{
-                id : Date.now(),
-                subject : data.subject,
-                completed : data.completed
-            }).then( response=> {
-                console.log (response.data);
-                todos.value.push( response.data);
-            }).catch( error => {
-                console.log(error);
-            })
-		};
-        */
-		
-		/*
-		const toggleTodo = (index) => {
-			todos.value[index].completed = !todos.value[index].completed;
-		};
-        */
-		const { showAlert, alertMsg, alertType, triggerAlert } = useToast();
-		// alert 구현을 위한 변수
-		// const showAlert = ref(false);
-		// const alertMsg = ref('');
-		// const alertType = ref('');
 
-		// const triggerAlert = (message, type = 'success') => {
-		//     showAlert.value = true;
-		//     alertMsg.value = message;
-		//     alertType.value= type;
-		//     setTimeout(()=>{
-		//         showAlert.value = false;
-		//     alertMsg.value = '';
-		//     alertType.value= '';
-		//     },3000);
-		// }
+		const { showAlert, alertMsg, alertType, triggerAlert } = useToast();
 
 		const toggleTodo = async (index) => {
 			const key = todos.value[index].id;
@@ -146,18 +123,31 @@ export default {
 			}
 		};
 
+		const onClose = () => {
+			console.log("Debug>>> onClose");
+			showModal.value = false;
+		};
+
+		const openModal = (id) => {
+			console.log("debug>>> todo id", id);
+			deleteTodoId = id;
+			showModal.value = true;
+		};
 		return {
 			//이 데이터들을 리턴해줘야 템플릿에서 사용이 가능하다.
 			todo,
 			todos,
-			onDelete,
 			searchTxt,
 			filteredTodos,
 			toggleTodo,
 			showAlert,
 			alertMsg,
 			alertType,
-            moveToCreate
+			moveToCreate,
+			onClose,
+			showModal,
+			openModal,
+			deleteTodo,
 		};
 	},
 };

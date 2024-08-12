@@ -5,7 +5,7 @@ import Home from '../todos/pages/TodoIndex.vue';
 import Todos from '../todos/pages/component/TodosMain.vue';
 import Create from '../todos/pages/component/TodoCreate.vue';
 import Todo from '../todos/pages/component/TodoView.vue';
-import Life from '@/components/test/TestLifecycle.vue'
+import Login from '@/components/login/UserLogin.vue';
 
 
 
@@ -28,9 +28,9 @@ const router = createRouter({
             component : Todo
         },
         {
-            path: '/life',
-            name : 'Life',
-            component : Life
+            path: '/login',
+            name : 'Login',
+            component : Login
         },
         {
             path: '/todos/create',

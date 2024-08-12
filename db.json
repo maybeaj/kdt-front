@@ -1,44 +1,24 @@
 {
   "todos": [
     {
-      "id": 1723014641627,
-      "subject": "그런가ㅇ",
-      "completed": false
-    },
-    {
-      "id": 1723014642922,
-      "subject": "44",
+      "id": 1723425701355,
+      "subject": "즐거운 한 주의 시작",
+      "body": "뷰 마무리하고 리액트도 가좌",
       "completed": true
     },
     {
-      "id": 1723014645624,
-      "subject": "4",
-      "completed": true
-    },
-    {
-      "id": 1723163788113,
-      "subject": "되니",
+      "id": 1723444411945,
+      "subject": "modal",
+      "body": "modaldladladla",
       "completed": false
-    },
+    }
+  ],
+  
+  "users" : [
     {
-      "id": 1723187031194,
-      "subject": "제발되길",
-      "completed": false
-    },
-    {
-      "id": 1723187344016,
-      "subject": "되나욤",
-      "completed": false
-    },
-    {
-      "id": 1723187763106,
-      "subject": "하하",
-      "completed": false
-    },
-    {
-      "id": 1723187785276,
-      "subject": "그랭",
-      "completed": false
+      "id": "jslim",
+      "password" :"jslim",
+      "nickName" : "섭섭해" 
     }
   ]
 }

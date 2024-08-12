@@ -21,7 +21,7 @@
           >
         </div>
         <div>
-          <button class="btn btn-danger btn-sm" @click.stop="onDelete(index)">
+          <button class="btn btn-danger btn-sm" @click.stop="openModal(data.id)">
             Delete
           </button>
         </div>
@@ -41,7 +41,7 @@ import { useRouter } from 'vue-router';
         required: true, //데이터가 반드시 있어야함
       },
     },
-    emits: ["toggle-todo", "delete-todo"],
+    emits: ["toggle-todo", "delete-todo","open-modal"],
     setup(props, context) {
       const router = useRouter();
       const moveToView = (todoId) =>  {
@@ -64,11 +64,15 @@ import { useRouter } from 'vue-router';
       const onDelete = (index) => {
         context.emit("delete-todo", index);
       };
+      const openModal = (id) => {
+        context.emit("open-modal", id);
+      }
       return {
         todoStyle,
         toggleTodo,
         onDelete,
-        moveToView
+        moveToView,
+        openModal
       };
     },
   };
