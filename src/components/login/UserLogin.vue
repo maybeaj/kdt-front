@@ -31,43 +31,45 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from "@/axios";
+
+import { ref }    from 'vue' ; 
+import { useRouter } from 'vue-router' ;
+import axios      from '@/axios' ; 
 
 export default {
-	setup() {
-        let user = ref({});
-        const router = useRouter();
+    setup() {
+        let user   = ref({id:'', password:'', nickName: ''});
+        const router = useRouter() ; 
         const onLogin = async () => {
-            console.log("Debug>>> login create btn click");
+            console.log("debug >>> login create btn click") ; 
             try {
-                // const data = {
-                //     id : user.value.id,
-                //     password : user.value.password
-                // };
-                let response = await axios.get(`users?id=${user.value.id}&password=${user.value.password}`);
-                console.log("login response data,",response.data);
-                user = response.data;
-                
-                router.push({
-				name: 'Home',
-                params : {
-                    "user" : user
+                // db.json 통신하고 정상적인 상황이면 router push 이용해서 화면 전환(todos)
+                let response = await axios.get(`users` , {
+                    params : {
+                        id: user.value.id,
+                        password: user.value.password
+                    }
+                });
+                if (response.data.length > 0) {
+                    alert('Login successful!');
                 }
-			});
-            } catch (error){
-                console.log(error);
+                router.push({
+                    name: 'Todos',
+                });
+            } catch( err ) {
+                console.log( err );
             }
+
         }
 
-
-        return{
-            user,
-            onLogin,
+        return {
+            user, 
+            onLogin
         }
-    },
-};
+    }
+}
 </script>
 
-<style></style>
+<style>
+
+</style>
